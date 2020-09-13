@@ -1,0 +1,8 @@
+﻿
+@*You can overwrite parameters this way, so be careful*@
+@*Parameters get overwritten left to right, so don't put things after the @attributes*@
+<input type="text" placeholder="default" @attributes="AdditionalParameters"/>
+
+@code {
+    [Parameter(CaptureUnmatchedValues =true)] public IDictionary<string, object> AdditionalParameters { get; set; }
+}

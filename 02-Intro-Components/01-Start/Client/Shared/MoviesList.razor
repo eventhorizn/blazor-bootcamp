@@ -1,0 +1,49 @@
+﻿@*This binding is a two way binding*@
+<input type="checkbox" @bind="@displayButtons" />
+
+@*Ok so This is all around Generic RenderFragment
+    We are making the list display generic...
+    The idea is that GenericList builds the list generically
+    Calling pages give it the list context*@
+<GenericList List="Movies">
+    @*Context is what is is passed to GenericList as the element
+        We call this an ElementTemplate as we are drawing elements from it*@
+    <ElementTemplate Context="movie">
+        <IndividualMovie Movie="movie" DisplayButtons="displayButtons"
+                         DeleteMovie="DeleteMovie" />
+    </ElementTemplate>
+</GenericList>
+
+@code {
+    [Parameter] public List<Movie> Movies { get; set; }
+
+    bool displayButtons = false;
+
+    private void DeleteMovie(Movie movie)
+    {
+        Movies.Remove(movie);
+    }
+
+    // Lifecycle Component follows protected override
+    // Check Output for console stuff
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("OnInitialized. Movies.Count - " + Movies.Count.ToString());
+    }
+
+    protected override void OnParametersSet()
+    {
+        Console.WriteLine("OnParameterSet. Movies.Count - " + Movies.Count.ToString());
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Console.WriteLine("OnAfterRender. First Render - " + firstRender.ToString());
+    }
+
+    // If you want to disable rendering, return false
+    protected override bool ShouldRender()
+    {
+        return true;
+    }
+}

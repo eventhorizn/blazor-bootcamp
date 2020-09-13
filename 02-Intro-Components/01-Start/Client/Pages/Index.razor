@@ -1,76 +1,28 @@
 ﻿@page "/"
-@*We can simply add this to the _Imports.razor file*@
-@*This includes the import for every razor file*@
-@*@using BlazorMovies.Client.Helpers*@
-
-@*<p>Hello, @CustomToUpper(name)</p>*@
-
-<p>Hello, @StringUtilities.CustomToUpper(name)</p>
-
-<p>Let's add 2 + 2 = @(2+2)</p>
-
-@*We can run this w/ an anonymous function*@
-@*<button @onclick="@(() => Console.WriteLine("I've been clicked"))">Click me</button>*@
-
-@*Or call an actual function*@
-<button @onclick="@WriteInLog">Click me</button>
 
 <div>
     <h3>Movie</h3>
-    @if (movies == null)
-    {
-        <text>Loading...</text>
-    }
-    else
-    {
-        @foreach (var movie in movies)
-        {
-            <p>Title: <b>@movie.Title</b></p>
-            <p>Release Date: <b>@movie.ReleaseDate.ToString("dd MMM yyyy")</b></p>
-        }
-
-        @for (var i = 0; i < movies.Count; i++)
-        {
-            <div style="background-color: @(i % 2 == 0 ? "blue" : "red")">
-                <p>@(i + 1)) Title: <b>@movies[i].Title</b></p>
-                <p>Release Date: <b>@movies[i].ReleaseDate.ToString("dd MMM yyyy")</b></p>
-            </div>
-        }
-    }
-
+    @*So we can use this in as many pages as we want*@
+    <MoviesList Movies="movies" />
 </div>
 
+<button @onclick="AddNewMovie">Add New Movie</button>
+
 @code{
-    string name = "Gary";
+    private List<Movie> movies;
 
-    List<Movie> movies;
-
-    protected async override Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        // putting this in to introduce an error for the html above
-        // so that we can put in a coditional check
-        await Task.Delay(3000);
-
         movies = new List<Movie>()
-    {
+        {
             new Movie(){Title = "Spider-Man: Far From Home", ReleaseDate = new DateTime(2019, 7, 2)},
             new Movie(){Title = "Moana", ReleaseDate = new DateTime(2016, 11, 23)},
             new Movie(){Title = "Inception", ReleaseDate = new DateTime(2010, 7, 16)}
         };
     }
 
-    // The weakness is keeping this in one file
-    // We may want to use in multiple places. So, we'll make a separate file
-    //public class StringUtilites
-    //{
-    //    public static string CustomToUpper(string value) => value.ToUpper();
-    //}
-
-    // Before moving to class
-    //string CustomToUppter(string value) => value.ToUpper();
-
-    void WriteInLog()
+    private void AddNewMovie()
     {
-        Console.WriteLine("I've been clicked (from method)");
+        movies.Add(new Movie() { Title = "Movie Sample", ReleaseDate = DateTime.Today });
     }
 }

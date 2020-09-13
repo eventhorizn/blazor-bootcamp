@@ -1,0 +1,51 @@
+﻿@page "/counter"
+
+<h3>Counter</h3>
+
+<div>
+    <p>Current Count: @currentCount</p>
+
+    <button class="btn btn-primary" @onclick="IncrementCount">Click Me</button>
+
+    <input type="number" @bind="currentCount" />
+</div>
+
+<div>
+    <MoviesList Movies="movies" />
+</div>
+
+@*Two different ways to do Arbitrary Parameters*@
+<div>
+    <h2>Create a Movie</h2>
+
+    <DummyTextbox placeholder="Movie Name" disabled="true" />
+    <DummyTextbox @attributes="@dummyTextboxParameters" />
+</div>
+
+@code {
+    private Dictionary<string, object> dummyTextboxParameters = new Dictionary<string, object>()
+    {
+        { "placeholder", "Movie Name" },
+        { "disabled", "true" }
+    };
+
+    private List<Movie> movies;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Task.Delay(1000);
+
+        movies = new List<Movie>()
+    {
+            new Movie(){Title = "Joker", ReleaseDate = new DateTime(2019, 7, 2)},
+            new Movie(){Title = "Avengers", ReleaseDate = new DateTime(2016, 11, 23)}
+        };
+    }
+
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}
