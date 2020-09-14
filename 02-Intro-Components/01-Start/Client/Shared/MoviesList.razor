@@ -1,4 +1,7 @@
-﻿@*This binding is a two way binding*@
+﻿@*Calling javascript from Blazor*@
+@inject IJSRuntime js
+
+@*This binding is a two way binding*@
 <input type="checkbox" @bind="@displayButtons" />
 
 @*Ok so This is all around Generic RenderFragment
@@ -14,14 +17,45 @@
     </ElementTemplate>
 </GenericList>
 
+<Confirmation @ref="confirmation" onCancel="onCancel" onConfirm="onConfirm">
+    <div>Do you wish to delete @movieToBeDeleted.Title?</div>
+</Confirmation>
+
 @code {
+    Confirmation confirmation;
     [Parameter] public List<Movie> Movies { get; set; }
 
     bool displayButtons = false;
+    Movie movieToBeDeleted;
+
+    // calling javascript from c#
+    //private async Task DeleteMovie(Movie movie)
+    //{
+    //    await js.MyFunction(" custom message");
+
+    //    var confirm = await js.Confirm($"Are you sure you want to delete {movie.Title}?");
+
+    //    if (confirm)
+    //        Movies.Remove(movie);
+    //}
 
     private void DeleteMovie(Movie movie)
     {
-        Movies.Remove(movie);
+        movieToBeDeleted = movie;
+        confirmation.Show();
+    }
+
+    void onConfirm()
+    {
+        Movies.Remove(movieToBeDeleted);
+        confirmation.Hide();
+        movieToBeDeleted = null;
+    }
+
+    void onCancel()
+    {
+        confirmation.Hide();
+        movieToBeDeleted = null;
     }
 
     // Lifecycle Component follows protected override

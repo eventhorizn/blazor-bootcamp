@@ -10,6 +10,26 @@
     </div>
 
     <div class="content px-4">
-        @Body
+        @*Cascading Parameters*@
+        @*Need a name to differentiate!*@
+        @*If you do it this way, there is a better way*@
+        @*<CascadingValue Value="@Color" Name="Color">
+            <CascadingValue Value="@Size" Name="Size">
+                @Body
+            </CascadingValue>
+        </CascadingValue>*@
+
+        <CascadingValue Value="appState">
+            @Body
+        </CascadingValue>
     </div>
 </div>
+
+@code {
+    AppState appState = new AppState();
+    public class AppState
+    {
+        public string Color { get; set; } = "red";
+        public string Size { get; set; } = "12px";
+    }
+}

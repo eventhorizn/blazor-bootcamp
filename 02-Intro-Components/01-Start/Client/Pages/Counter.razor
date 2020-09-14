@@ -1,18 +1,42 @@
 ﻿@page "/counter"
+@*Can keep these in the .razor page or (go to .cs page)*@
+@inject SingeltonService singelton
+@inject TransientService transient
 
-<h3>Counter</h3>
+<h1 style="color: @AppState.Color">Counter</h1>
+
+<div style="display: flex">
+    <div style="width: 150px">
+        <select @bind="AppState.Color" class="form-control" style="margin-top: 15px;">
+            <option value="green">Green</option>
+            <option value="red">Red</option>
+            <option value="blue">Blue</option>
+        </select>
+    </div>
+    <div style="width: 150px">
+        <select @bind="AppState.Size" class="form-control" style="margin-top: 15px;">
+            <option value="12px">12px</option>
+            <option value="20px">20px</option>
+            <option value="30px">30px</option>
+        </select>
+    </div>
+</div>
 
 <div>
-    <p>Current Count: @currentCount</p>
+    <p style="color: @AppState.Color; font-size: @AppState.Size">Current Count: @currentCount</p>
+    <p>Singelton Count: @singelton.Value</p>
+    <p>Transient Count: @transient.Value</p>
 
     <button class="btn btn-primary" @onclick="IncrementCount">Click Me</button>
+
+    <button class="btn btn-primary" @onclick="IncrementCountJavaScript">Click Me JavaScript</button>
 
     <input type="number" @bind="currentCount" />
 </div>
 
-<div>
+@*<div>
     <MoviesList Movies="movies" />
-</div>
+</div>*@
 
 @*Two different ways to do Arbitrary Parameters*@
 <div>
@@ -21,31 +45,3 @@
     <DummyTextbox placeholder="Movie Name" disabled="true" />
     <DummyTextbox @attributes="@dummyTextboxParameters" />
 </div>
-
-@code {
-    private Dictionary<string, object> dummyTextboxParameters = new Dictionary<string, object>()
-    {
-        { "placeholder", "Movie Name" },
-        { "disabled", "true" }
-    };
-
-    private List<Movie> movies;
-
-    protected async override Task OnInitializedAsync()
-    {
-        await Task.Delay(1000);
-
-        movies = new List<Movie>()
-    {
-            new Movie(){Title = "Joker", ReleaseDate = new DateTime(2019, 7, 2)},
-            new Movie(){Title = "Avengers", ReleaseDate = new DateTime(2016, 11, 23)}
-        };
-    }
-
-    private int currentCount = 0;
-
-    private void IncrementCount()
-    {
-        currentCount++;
-    }
-}

@@ -1,5 +1,9 @@
 # Components
 
+```
+wwwroot folder contains all static files (html, css, js)
+```
+
 1. The centerpiece of Blazor
 1. A component is a resusable piece of user interface
     - May contain logic
@@ -42,3 +46,14 @@
     - Used to work w/ JavaScript
 1. NavigationManager
     - Allows us to work w/ user's navigation from our code
+
+3 services don't have to be configured
+
+### Lifecycle of a Service
+
+1. Scoped
+    - Lives w/i a context (like during an HTTP request)
+1. Singelton
+    - Single instance
+1. Transient
+    - Different instances of the service are created each time the service is requested
