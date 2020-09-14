@@ -1,10 +1,9 @@
-﻿
-<div class="individual-movie-container">
-    <a>
+﻿<div class="individual-movie-container">
+    <a href="@movieURL">
         <img src="@Movie.Poster" alt="Poster" class="movie-poster"/>
     </a>
 
-    <p>@Movie.TitleBrief</p>
+    <p><a href="@movieURL">@Movie.TitleBrief</a></p>
 
     <div>
         <a class="btn btn-info">Edit</a>
@@ -18,4 +17,11 @@
 @code {
     [Parameter] public Movie Movie { get; set; }
     [Parameter] public EventCallback<Movie> DeleteMovie { get; set; }
+
+    private string movieURL = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        movieURL = $"movie/{Movie.Id}/{Movie.Title.Replace(" ", "-")}";
+    }
 }

@@ -1,0 +1,12 @@
+﻿@*Route Parameters*@
+@page "/movie/{MovieId:int}"
+@*Don't use types for string parameters*@
+@page "/movie/{MovieId:int}/{MovieName}"
+
+<h3>DetailsMovie</h3>
+
+@code {
+    @*type has to match above*@
+    [Parameter] public int MovieId { get; set; }
+    [Parameter] public string MovieName { get; set; }
+}

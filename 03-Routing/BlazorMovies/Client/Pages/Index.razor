@@ -1,9 +1,11 @@
-﻿@page "/"
+﻿@*can have multiple routes*@
+@page "/"
+@page "/index"
 @inject IRepository repository
 
 <div>
     <h3>Movie</h3>
-    @*So we can use this in as many pages as we want*@
+
     <MoviesList Movies="movies" />
 </div>
 

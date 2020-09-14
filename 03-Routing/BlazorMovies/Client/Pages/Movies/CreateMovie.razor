@@ -1,0 +1,19 @@
+﻿@page "/movies/create"
+@inject NavigationManager navManager
+
+<h3>CreateMovie</h3>
+
+<button class="btn btn-primary" @onclick="SaveMovie">Save Movie</button>
+
+@code {
+    @*Method or field can't match component name*@
+    //private void CreateMovie()
+    //{
+
+    //}
+
+    private void SaveMovie()
+    {
+        navManager.NavigateTo("movie");
+    }
+}
