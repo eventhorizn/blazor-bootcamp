@@ -5,13 +5,4 @@ using System.Threading.Tasks;
 
 namespace BlazorMovies.Client
 {
-    public class SingeltonService
-    {
-        public int Value { get; set; }
-    }
-
-    public class TransientService
-    {
-        public int Value { get; set; }
-    }
 }
