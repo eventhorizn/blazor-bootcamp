@@ -1,0 +1,61 @@
+﻿@inject IJSRuntime js
+
+<input type="checkbox" @bind="@displayButtons" />
+
+<GenericList List="Movies">
+    <ElementTemplate Context="movie">
+        <IndividualMovie Movie="movie" DisplayButtons="displayButtons"
+                         DeleteMovie="DeleteMovie" />
+    </ElementTemplate>
+</GenericList>
+
+<Confirmation @ref="confirmation" onCancel="onCancel" onConfirm="onConfirm">
+    <div>Do you wish to delete @movieToBeDeleted.Title?</div>
+</Confirmation>
+
+@code {
+    Confirmation confirmation;
+    [Parameter] public List<Movie> Movies { get; set; }
+
+    bool displayButtons = false;
+    Movie movieToBeDeleted;
+
+    private void DeleteMovie(Movie movie)
+    {
+        movieToBeDeleted = movie;
+        confirmation.Show();
+    }
+
+    void onConfirm()
+    {
+        Movies.Remove(movieToBeDeleted);
+        confirmation.Hide();
+        movieToBeDeleted = null;
+    }
+
+    void onCancel()
+    {
+        confirmation.Hide();
+        movieToBeDeleted = null;
+    }
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("OnInitialized. Movies.Count - " + Movies.Count.ToString());
+    }
+
+    protected override void OnParametersSet()
+    {
+        Console.WriteLine("OnParameterSet. Movies.Count - " + Movies.Count.ToString());
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        Console.WriteLine("OnAfterRender. First Render - " + firstRender.ToString());
+    }
+
+    protected override bool ShouldRender()
+    {
+        return true;
+    }
+}
