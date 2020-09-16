@@ -1,3 +1,4 @@
+using BlazorMovies.Server.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,10 @@ namespace BlazorMovies.Server
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IFileStorageService, AzureStorageService>();
+            // Uncomment if you want to store images locally instead of on azure
+            //services.AddScoped<IFileStorageService, InAppStorageService>();
+            //services.AddHttpContextAccessor();
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
