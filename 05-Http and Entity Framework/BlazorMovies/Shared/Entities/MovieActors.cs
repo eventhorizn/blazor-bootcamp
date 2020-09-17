@@ -2,7 +2,7 @@
 {
     public class MovieActors
     {
-        public int PersionId { get; set; }
+        public int PersonId { get; set; }
         public int MovieId { get; set; }
         public Person Person { get; set; }
         public Movie Movie { get; set; }

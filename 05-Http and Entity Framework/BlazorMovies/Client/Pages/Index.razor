@@ -1,32 +1,28 @@
 ﻿@*can have multiple routes*@
 @page "/"
 @page "/index"
-@inject IRepository repository
+@inject IMoviesRepository repository
 
 <div>
-    <h3>Movie</h3>
+    <h3>In Theaters</h3>
 
-    <MoviesList Movies="movies" />
+    <MoviesList Movies="InTheaters" />
 </div>
 
-<CustomTypeahead SearchMethod="SearchMethod">
-    <ResultTemplate>
-        @context
-    </ResultTemplate>
-</CustomTypeahead>
+<div>
+    <h3>Upcoming Releases</h3>
+
+    <MoviesList Movies="UpcomingReleases" />
+</div>
 
 @code{
-    private List<Movie> movies;
+    private List<Movie> InTheaters;
+    private List<Movie> UpcomingReleases;
 
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
-        movies = repository.GetMovies();
-    }
-
-    private async Task<IEnumerable<string>> SearchMethod(string searchText)
-    {
-        await Task.Delay(2000);
-        if (searchText == "test") { return Enumerable.Empty<string>();  }
-        return new List<string>() { "Gary", "Katie" };
+        var response = await repository.GetIndexPageDTO();
+        InTheaters = response.InTheaters;
+        UpcomingReleases = response.UpcomingReleases;
     }
 }
