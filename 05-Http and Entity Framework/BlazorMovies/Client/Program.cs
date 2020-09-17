@@ -28,6 +28,7 @@ namespace BlazorMovies.Client
             services.AddScoped<IHttpService, HttpService>();
             services.AddScoped<IGenreRepository, GenreRepository>();
             services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddScoped<IMoviesRepository, MoviesRepository>();
             services.AddFileReaderService(options => options.InitializeOnFirstCall = true);
         }
     }

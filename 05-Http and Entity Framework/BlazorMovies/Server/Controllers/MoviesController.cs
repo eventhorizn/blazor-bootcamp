@@ -8,12 +8,12 @@ namespace BlazorMovies.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class PeopleController : ControllerBase
+    public class MoviesController : ControllerBase
     {
         private readonly ApplicationDbContext context;
         private readonly IFileStorageService fileStorageService;
 
-        public PeopleController(ApplicationDbContext context,
+        public MoviesController(ApplicationDbContext context,
             IFileStorageService fileStorageService)
         {
             this.context = context;
@@ -21,17 +21,17 @@ namespace BlazorMovies.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> Post(Person person)
+        public async Task<ActionResult<int>> Post(Movie movie)
         {
-            if (!string.IsNullOrWhiteSpace(person.Picture))
+            if (!string.IsNullOrWhiteSpace(movie.Poster))
             {
-                var personPicture = Convert.FromBase64String(person.Picture);
-                person.Picture = await fileStorageService.SaveFile(personPicture, "jpg", "people");
+                var personPicture = Convert.FromBase64String(movie.Poster);
+                movie.Poster = await fileStorageService.SaveFile(personPicture, "jpg", "people");
             }
 
-            context.Add(person);
+            context.Add(movie);
             await context.SaveChangesAsync();
-            return person.Id;
+            return movie.Id;
         }
     }
 }
