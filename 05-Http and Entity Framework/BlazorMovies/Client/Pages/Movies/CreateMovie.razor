@@ -1,20 +1,23 @@
 ﻿@page "/movies/create"
 @inject NavigationManager navManager
 @inject IMoviesRepository moviesRepository
+@inject IGenreRepository genreRepository
 
 <h3>Create Movie</h3>
 
-<MovieForm Movie="Movie" OnValidSubmit="SaveMovie" NotSelectedGenres="NotSelectedGenres"/>
+@if (NotSelectedGenres != null)
+{
+    <MovieForm Movie="Movie" OnValidSubmit="SaveMovie" NotSelectedGenres="NotSelectedGenres" />
+}
 
 @code {
     private Movie Movie = new Movie();
+    private List<Genre> NotSelectedGenres;
 
-    private List<Genre> NotSelectedGenres = new List<Genre>()
+    protected async override Task OnInitializedAsync()
     {
-        new Genre(){Id = 1, Name = "Action"},
-        new Genre(){Id = 2, Name = "Comedy"},
-        new Genre(){Id = 3, Name = "Drama"}
-    };
+        NotSelectedGenres = await genreRepository.GetGenres();
+    }
 
     private async Task SaveMovie()
     {
