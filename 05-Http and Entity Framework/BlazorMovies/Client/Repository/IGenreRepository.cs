@@ -10,5 +10,6 @@ namespace BlazorMovies.Client.Repository
         Task<Genre> GetGenre(int id);
         Task<List<Genre>> GetGenres();
         Task UpdateGenre(Genre genre);
+        Task DeleteGenre(int Id);
     }
 }

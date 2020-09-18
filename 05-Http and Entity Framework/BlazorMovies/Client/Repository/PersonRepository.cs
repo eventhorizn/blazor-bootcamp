@@ -59,5 +59,13 @@ namespace BlazorMovies.Client.Repository
             if (!response.Success)
                 throw new ApplicationException(await response.GetBody());
         }
+
+        public async Task DeletePerson(int id)
+        {
+            var response = await httpService.Delete($"{url}/{id}");
+
+            if (!response.Success)
+                throw new ApplicationException(await response.GetBody());
+        }
     }
 }
