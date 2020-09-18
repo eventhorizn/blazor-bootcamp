@@ -97,7 +97,7 @@
 
     private async Task<IEnumerable<Person>> SearchMethod(string searchText)
     {
-        return await personRepository.GetPepleByName(searchText);
+        return await personRepository.GetPeopleByName(searchText);
     }
 
     private async Task OnDataAnnotationsValidated()

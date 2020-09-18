@@ -1,3 +1,4 @@
+using AutoMapper;
 using BlazorMovies.Server.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +32,8 @@ namespace BlazorMovies.Server
             //services.AddHttpContextAccessor();
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddMvc()
                 .AddNewtonsoftJson(options => 

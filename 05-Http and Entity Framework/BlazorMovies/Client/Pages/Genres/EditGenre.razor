@@ -1,4 +1,6 @@
 ﻿@page "/genre/edit/{GenreId:int}"
+@inject IGenreRepository genreRepository
+@inject NavigationManager navigationManager
 
 <h3>Edit Genre</h3>
 
@@ -11,13 +13,14 @@
     [Parameter] public int GenreId { get; set; }
     public Genre genre;
 
-    private void Edit()
+    protected override async Task OnInitializedAsync()
     {
-
+        genre = await genreRepository.GetGenre(GenreId);
     }
 
-    protected override void OnInitialized()
+    private void Edit()
     {
-        genre = new Genre() { Id = GenreId, Name = "Comedy" };
+        genreRepository.UpdateGenre(genre);
+        navigationManager.NavigateTo("genres");
     }
 }
