@@ -29,12 +29,12 @@ namespace BlazorMovies.Server.Controllers
             var limit = 6;
             var todaysDate = DateTime.Today;
 
-            var moviesInTheaters = await context.Movie
+            var moviesInTheaters = await context.Movies
                 .Where(x => x.InTheaters).Take(limit)
                 .OrderByDescending(x => x.ReleaseDate)
                 .ToListAsync();
 
-            var upcomingReleases = await context.Movie
+            var upcomingReleases = await context.Movies
                 .Where(x => x.ReleaseDate > todaysDate)
                 .OrderBy(x => x.ReleaseDate)
                 .Take(limit).ToListAsync();
@@ -44,6 +44,34 @@ namespace BlazorMovies.Server.Controllers
             response.UpcomingReleases = upcomingReleases;
 
             return response;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<DetailsMovieDTO>> Get(int id)
+        {
+            var movie = await context.Movies.Where(x => x.Id == id)
+                .Include(x => x.MoviesGenres).ThenInclude(x => x.Genre)
+                .Include(x => x.MovieActors).ThenInclude(x => x.Person)
+                .FirstOrDefaultAsync();
+
+            if (movie == null) { return NotFound(); }
+
+            movie.MovieActors = movie.MovieActors.OrderBy(x => x.Order).ToList();
+
+            var model = new DetailsMovieDTO();
+            model.Movie = movie;
+            model.Genres = movie.MoviesGenres.Select(x => x.Genre).ToList();
+            model.Actors = movie.MovieActors.Select(x =>
+                new Person
+                {
+                    Name = x.Person.Name,
+                    Picture = x.Person.Picture,
+                    Character = x.Character,
+                    Id = x.PersonId
+                }
+            ).ToList();
+
+            return model;
         }
 
         [HttpPost]

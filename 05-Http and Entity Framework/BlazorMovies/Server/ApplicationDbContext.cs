@@ -20,8 +20,8 @@ namespace BlazorMovies.Server
         }
 
         public DbSet<Genre> Genres { get; set; }
-        public DbSet<Movie> Movie { get; set; }
-        public DbSet<Person> Person { get; set; }
+        public DbSet<Movie> Movies { get; set; }
+        public DbSet<Person> People { get; set; }
         public DbSet<MoviesGenres> MoviesGenres { get; set; }
         public DbSet<MovieActors> MovieActors { get; set; }
     }

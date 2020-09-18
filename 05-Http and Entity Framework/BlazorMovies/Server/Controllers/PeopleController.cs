@@ -26,14 +26,14 @@ namespace BlazorMovies.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Person>>> Get()
         {
-            return await context.Person.ToListAsync();
+            return await context.People.ToListAsync();
         }
 
         [HttpGet("search/{searchText}")]
         public async Task<ActionResult<List<Person>>> FilterByName(string searchText)
         {
             if (string.IsNullOrWhiteSpace(searchText)) { return new List<Person>(); }
-            return await context.Person.Where(x => x.Name.Contains(searchText))
+            return await context.People.Where(x => x.Name.Contains(searchText))
                 .Take(5)
                 .ToListAsync();
         }
