@@ -33,3 +33,8 @@ No, just front end code
     - Doesn't need to download .net runtime
 1. **Advantage:** Devices w/ less resources should be able to run the app w/o problems
 1. Blazor server-side limitations relate to the server
+
+# TODO
+
+1. Create MongodDB implementation
+1. Re-do some of the db design...its' very self referential
