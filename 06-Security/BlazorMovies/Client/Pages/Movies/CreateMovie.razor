@@ -2,6 +2,7 @@
 @inject NavigationManager navManager
 @inject IMoviesRepository moviesRepository
 @inject IGenreRepository genreRepository
+@attribute [Authorize]
 
 <h3>Create Movie</h3>
 
@@ -26,7 +27,7 @@
             var movieId = await moviesRepository.CreateMovie(Movie);
             navManager.NavigateTo($"movie/{movieId}/{Movie.Title.Replace(" ", "-")}");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }

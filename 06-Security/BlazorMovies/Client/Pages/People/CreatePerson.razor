@@ -1,10 +1,11 @@
 ﻿@page "/person/create"
 @inject IPersonRepository personRepository
 @inject NavigationManager navManager;
+@attribute [Authorize]
 
 <h3>Create Person</h3>
 
-<PersonForm Person="Person" OnValidSubmit="Create"/>
+<PersonForm Person="Person" OnValidSubmit="Create" />
 
 @code {
     Person Person = new Person();
@@ -16,7 +17,7 @@
             await personRepository.CreatePerson(Person);
             navManager.NavigateTo("people");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }

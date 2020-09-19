@@ -1,6 +1,7 @@
 ﻿@page "/genre/create"
 @inject IGenreRepository genreRepository
 @inject NavigationManager navManager
+@attribute [Authorize]
 
 <h3>Create Genre</h3>
 
@@ -16,7 +17,7 @@
             await genreRepository.CreateGenre(genre);
             navManager.NavigateTo("genres");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
