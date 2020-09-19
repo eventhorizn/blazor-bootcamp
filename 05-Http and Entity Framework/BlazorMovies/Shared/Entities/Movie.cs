@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorMovies.Shared.Entities
 {
@@ -30,5 +31,7 @@ namespace BlazorMovies.Shared.Entities
         }
         public List<MoviesGenres> MoviesGenres { get; set; } = new List<MoviesGenres>();
         public List<MovieActors> MovieActors { get; set; } = new List<MovieActors>();
+        [NotMapped]
+        public string MovieURL => $"movie/{Id}/{Title.Replace(" ", "-")}";
     }
 }

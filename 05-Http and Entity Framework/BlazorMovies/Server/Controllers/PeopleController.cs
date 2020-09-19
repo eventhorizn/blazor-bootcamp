@@ -40,6 +40,15 @@ namespace BlazorMovies.Server.Controllers
         public async Task<ActionResult<Person>> Get(int id)
         {
             var person = await context.People.FirstOrDefaultAsync(x => x.Id == id);
+            var movieActors = context.MovieActors.Where(x => x.PersonId == person.Id).ToList();
+
+            foreach (var ma in movieActors)
+            {
+                ma.Movie = context.Movies.Where(x => x.Id == ma.MovieId).FirstOrDefault();
+            }
+
+            person.MovieActors = movieActors;
+
             if (person == null) { return NotFound(); }
             return person;
         }
