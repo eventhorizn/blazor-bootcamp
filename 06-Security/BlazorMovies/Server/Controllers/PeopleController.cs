@@ -2,6 +2,8 @@
 using BlazorMovies.Server.Helpers;
 using BlazorMovies.Shared.DTO;
 using BlazorMovies.Shared.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,6 +15,7 @@ namespace BlazorMovies.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class PeopleController : ControllerBase
     {
         private readonly ApplicationDbContext context;
@@ -37,17 +40,12 @@ namespace BlazorMovies.Server.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Person>> Get(int id)
         {
-            var person = await context.People.FirstOrDefaultAsync(x => x.Id == id);
-            var movieActors = context.MovieActors.Where(x => x.PersonId == person.Id).ToList();
-
-            foreach (var ma in movieActors)
-            {
-                ma.Movie = context.Movies.Where(x => x.Id == ma.MovieId).FirstOrDefault();
-            }
-
-            person.MovieActors = movieActors;
+            var person = await context.People
+                .Include(x => x.MovieActors).ThenInclude(x => x.Movie)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (person == null) { return NotFound(); }
             return person;
