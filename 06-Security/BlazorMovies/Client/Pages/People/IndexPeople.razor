@@ -1,6 +1,6 @@
 ﻿@page "/people"
 @inject IPersonRepository personRepository
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin")]
 
 <h3>Index People</h3>
 

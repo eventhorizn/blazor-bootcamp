@@ -32,6 +32,7 @@ namespace BlazorMovies.Client
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<IMoviesRepository, MoviesRepository>();
             services.AddScoped<IAccountsRepository, AccountsRepository>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IRatingRepository, RatingRepository>();
             services.AddScoped<IDisplayMessage, DisplayMessage>();
 

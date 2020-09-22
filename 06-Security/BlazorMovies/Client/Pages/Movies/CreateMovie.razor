@@ -2,7 +2,7 @@
 @inject NavigationManager navManager
 @inject IMoviesRepository moviesRepository
 @inject IGenreRepository genreRepository
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Admin")]
 
 <h3>Create Movie</h3>
 
