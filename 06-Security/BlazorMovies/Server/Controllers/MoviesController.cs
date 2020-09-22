@@ -131,7 +131,7 @@ namespace BlazorMovies.Server.Controllers
             var voteAverage = 0.0;
             var userVote = 0;
 
-            if (await context.MovieActors.AnyAsync(x => x.MovieId == id))
+            if (await context.MovieRatings.AnyAsync(x => x.MovieId == id))
             {
                 voteAverage = await context.MovieRatings.Where(x => x.MovieId == id)
                     .AverageAsync(x => x.Rate);

@@ -1,12 +1,10 @@
-﻿<h3>Rating</h3>
-
-@for (int i = 1; i <= MaximumRating; i++)
+﻿@for (int i = 1; i <= MaximumRating; i++)
 {
     var starNumber = i;
     <span @onclick="@(() => onclickHandle(starNumber))"
           @onmouseover="@(() => onmouseoverHandle(starNumber))"
           style="cursor:pointer;"
-          class="fa fa-star @(SelectedRating >= 1 ? "checked" : null)">
+          class="fa fa-star @(SelectedRating >= i ? "checked" : null)">
 
     </span>
 }
