@@ -1,10 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using BlazorMovies.Shared.DTO;
+using System.Threading.Tasks;
 
 namespace BlazorMovies.Client.Auth
 {
-    interface ILoginService
+    public interface ILoginService
     {
-        Task Login(string token);
+        Task Login(UserToken userToken);
         Task Logout();
+        Task TryRenewToken();
     }
 }
