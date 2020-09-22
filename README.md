@@ -34,6 +34,15 @@ No, just front end code
 1. **Advantage:** Devices w/ less resources should be able to run the app w/o problems
 1. Blazor server-side limitations relate to the server
 
+## Identity Server 4
+
+1. Identity Server is a framework that uses OpenId Connect and OAuth 2.0
+1. OAuth 2.0 is a standard authorization protocol
+1. OpenId Connect has function
+1. Centralizes authentication logic
+1. Single-Sign On
+1. External Identity Providers
+
 # TODO
 
 1. Create MongodDB implementation
