@@ -14,3 +14,18 @@ function dotNetStaticInvocation() {
 function dotNetInstanceInvocation(dotNetHelper) {
     dotNetHelper.invokeMethodAsync("IncrementCount");
 }
+
+function initializeInactivityTimer(dotNetHelper) {
+    var timer;
+    document.onmousemove = resetTimer;
+    document.onkeypress = resetTimer;
+
+    function resetTimer() {
+        clearTimeout(timer);
+        timer = setTimeout(logout, 1000 * 60 * 10); //10 minutes
+    }
+
+    function logout() {
+        dotNetHelper.invokeMethodAsync("Logout");
+    }
+}
