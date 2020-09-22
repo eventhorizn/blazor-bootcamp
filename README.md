@@ -38,3 +38,4 @@ No, just front end code
 
 1. Create MongodDB implementation
 1. Re-do some of the db design...its' very self referential
+1. Roles page update: List roles for a person on Edit User
