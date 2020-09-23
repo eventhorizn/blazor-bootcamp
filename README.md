@@ -36,6 +36,8 @@ No, just front end code
 
 ## Identity Server 4
 
+**Blazor WebAssembly has pre-configured Templates for IS4**
+
 1. Identity Server is a framework that uses OpenId Connect and OAuth 2.0
 1. OAuth 2.0 is a standard authorization protocol
 1. OpenId Connect has function
