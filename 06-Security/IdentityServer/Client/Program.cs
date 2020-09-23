@@ -1,8 +1,8 @@
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 using BlazorMovies.Client.Helpers;
 using BlazorMovies.Client.Repository;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Tewr.Blazor.FileReader;
@@ -16,7 +16,12 @@ namespace BlazorMovies.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddHttpClient<HttpClientWithToken>(
+                client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
+                .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+            builder.Services.AddHttpClient<HttpClientWithoutToken>(
+                client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+
             ConfigureServices(builder.Services);
 
             await builder.Build().RunAsync();

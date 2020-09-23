@@ -35,7 +35,7 @@ namespace BlazorMovies.Client.Repository
 
         public async Task<Person> GetPersonById(int id)
         {
-            return await httpService.GetHelper<Person>($"{url}/{id}");
+            return await httpService.GetHelper<Person>($"{url}/{id}", includeToken: false);
         }
 
 
