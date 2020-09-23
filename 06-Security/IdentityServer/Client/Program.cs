@@ -1,10 +1,8 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using BlazorMovies.Client.Auth;
 using BlazorMovies.Client.Helpers;
 using BlazorMovies.Client.Repository;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Tewr.Blazor.FileReader;
@@ -35,15 +33,9 @@ namespace BlazorMovies.Client
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IRatingRepository, RatingRepository>();
             services.AddScoped<IDisplayMessage, DisplayMessage>();
-            services.AddScoped<TokenRenewer>();
 
             services.AddFileReaderService(options => options.InitializeOnFirstCall = true);
-            services.AddAuthorizationCore();
-            services.AddScoped<JWTAuthenticationStateProvider>();
-            services.AddScoped<AuthenticationStateProvider, JWTAuthenticationStateProvider>(
-                provider => provider.GetRequiredService<JWTAuthenticationStateProvider>());
-            services.AddScoped<ILoginService, JWTAuthenticationStateProvider>(
-                provider => provider.GetRequiredService<JWTAuthenticationStateProvider>());
+            services.AddApiAuthorization();
         }
     }
 }

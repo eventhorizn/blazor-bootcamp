@@ -1,7 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject TokenRenewer tokenRenewer
-@inject NavigationManager navigationManager
-@inject IJSRuntime js
 
 <div class="sidebar">
     <NavMenu />
@@ -17,24 +14,3 @@
         @Body
     </div>
 </div>
-
-@code {
-    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await js.InitializeInactivityTimer(DotNetObjectReference.Create(this));
-        tokenRenewer.Initiate();
-    }
-
-    [JSInvokable]
-    public async Task Logout()
-    {
-        var authState = await AuthenticationState;
-        if (authState.User.Identity.IsAuthenticated)
-        {
-            // Uncomment to activate automatic logout
-            navigationManager.NavigateTo("logout");
-        }
-    }
-}
