@@ -51,3 +51,4 @@ No, just front end code
 1. Re-do some of the db design...its' very self referential
 1. Roles page update: List roles for a person on Edit User
 1. Better 'bad password' handling. Just throws an error right now
+1. Fix the markdown generator. doesn't scroll, and I want it to render on text box change

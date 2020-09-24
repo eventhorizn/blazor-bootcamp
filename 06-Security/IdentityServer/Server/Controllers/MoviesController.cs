@@ -93,7 +93,26 @@ namespace BlazorMovies.Server.Controllers
 
             var movies = await moviesQueryable.Paginate(filterMoviesDTO.Pagination).ToListAsync();
 
+            if (filterMoviesDTO.MostVoted)
+            {
+                movies = OrderByRating(movies);
+            }
+
             return movies;
+        }
+
+        private List<Movie> OrderByRating(List<Movie> movies)
+        {
+            foreach (var movie in movies)
+            {
+                if (context.MovieRatings.Any(x => x.MovieId == movie.Id))
+                    movie.Rating = context.MovieRatings.Where(x => x.MovieId == movie.Id)
+                        .Average(x => x.Rate);
+                else
+                    movie.Rating = 0;
+            }
+
+            return movies.OrderByDescending(x => x.Rating).ToList();
         }
 
         [HttpGet("update/{id}")]

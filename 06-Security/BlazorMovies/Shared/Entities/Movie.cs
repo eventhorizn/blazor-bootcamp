@@ -33,5 +33,7 @@ namespace BlazorMovies.Shared.Entities
         public List<MovieActors> MovieActors { get; set; } = new List<MovieActors>();
         [NotMapped]
         public string MovieURL => $"movie/{Id}/{Title.Replace(" ", "-")}";
+        [NotMapped]
+        public double Rating { get; set; }
     }
 }
