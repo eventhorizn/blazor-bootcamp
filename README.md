@@ -45,6 +45,21 @@ No, just front end code
 1. Single-Sign On
 1. External Identity Providers
 
+# Download List
+
+1. [Visual Studio Community](https://visualstudio.microsoft.com/vs/community/)
+1. [.Net Core](https://dotnet.microsoft.com/download)
+    - Download core not framework
+1. [.Net Cli](https://docs.microsoft.com/en-us/dotnet/core/tools/)
+    - Included in sdk
+1. [Azure Storage Explorer](https://azure.microsoft.com/en-us/features/storage-explorer/)
+    - Used to 'upload' a static web page to Azure Storage
+1. [Azure DevOps](https://dev.azure.com/)
+    - Not a download, but where we build our pipelines
+1. [Azure](https://portal.azure.com/#home)
+    - Not a download, not free (though they have free trials and free tiers)
+    - Used to host deployed sites
+
 # TODO
 
 1. Create MongodDB implementation
