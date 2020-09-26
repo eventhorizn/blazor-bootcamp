@@ -59,6 +59,9 @@ No, just front end code
 1. [Azure](https://portal.azure.com/#home)
     - Not a download, not free (though they have free trials and free tiers)
     - Used to host deployed sites
+1. [.Net Hosting Bundle](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+    - For hosting in IIS
+    - Click on the .net core version you are using, and download the hosting bundle (I used 3.1)
 
 # TODO
 
