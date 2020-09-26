@@ -62,6 +62,7 @@ No, just front end code
 1. [.Net Hosting Bundle](https://dotnet.microsoft.com/download/dotnet-core/3.1)
     - For hosting in IIS
     - Click on the .net core version you are using, and download the hosting bundle (I used 3.1)
+1. [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 
 # TODO
 
