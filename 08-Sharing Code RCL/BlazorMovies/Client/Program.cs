@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using BlazorMovies.Client.Auth;
 using BlazorMovies.Client.Helpers;
 using BlazorMovies.Client.Repository;
+using BlazorMovies.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +37,7 @@ namespace BlazorMovies.Client
             services.AddScoped<IRatingRepository, RatingRepository>();
             services.AddScoped<IDisplayMessage, DisplayMessage>();
             services.AddScoped<TokenRenewer>();
+            services.AddTransient<IExampleInterface, ExampleImplementation>();
 
             services.AddFileReaderService(options => options.InitializeOnFirstCall = true);
             services.AddAuthorizationCore();
