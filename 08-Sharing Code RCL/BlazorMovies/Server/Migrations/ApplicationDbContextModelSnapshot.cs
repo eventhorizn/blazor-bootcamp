@@ -15,7 +15,7 @@ namespace BlazorMovies.Server.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.8")
+                .HasAnnotation("ProductVersion", "3.1.0-preview2.19525.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -33,6 +33,13 @@ namespace BlazorMovies.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genres");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 2,
+                            Name = "Comedy"
+                        });
                 });
 
             modelBuilder.Entity("BlazorMovies.Shared.Entities.Movie", b =>
@@ -67,27 +74,6 @@ namespace BlazorMovies.Server.Migrations
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("BlazorMovies.Shared.Entities.MovieActors", b =>
-                {
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PersonId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Character")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.HasKey("MovieId", "PersonId");
-
-                    b.HasIndex("PersonId");
-
-                    b.ToTable("MovieActors");
-                });
-
             modelBuilder.Entity("BlazorMovies.Shared.Entities.MovieRating", b =>
                 {
                     b.Property<int>("Id")
@@ -112,6 +98,27 @@ namespace BlazorMovies.Server.Migrations
                     b.HasIndex("MovieId");
 
                     b.ToTable("MovieRatings");
+                });
+
+            modelBuilder.Entity("BlazorMovies.Shared.Entities.MoviesActors", b =>
+                {
+                    b.Property<int>("MovieId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Character")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.HasKey("MovieId", "PersonId");
+
+                    b.HasIndex("PersonId");
+
+                    b.ToTable("MoviesActors");
                 });
 
             modelBuilder.Entity("BlazorMovies.Shared.Entities.MoviesGenres", b =>
@@ -144,7 +151,6 @@ namespace BlazorMovies.Server.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Picture")
@@ -269,24 +275,6 @@ namespace BlazorMovies.Server.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "a729e84c-d741-4c50-99d8-f2f4e4ae38d2",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "e73a3daf-c48e-4039-82c3-dad97cf23efb",
-                            Email = "gary@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "gary@gmail.com",
-                            NormalizedUserName = "gary@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEG8vRUyP44v2BilWjaALFT8Opc5tD99U7LGNloURTVSm/6wzHZrxxr7PKU0euOwZeA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "0a83859f-a8f2-4b4b-a0b3-0a8b36e30109",
-                            TwoFactorEnabled = false,
-                            UserName = "gary@gmail.com"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -311,15 +299,6 @@ namespace BlazorMovies.Server.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserClaims");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
-                            ClaimValue = "Admin",
-                            UserId = "a729e84c-d741-4c50-99d8-f2f4e4ae38d2"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -378,26 +357,26 @@ namespace BlazorMovies.Server.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("BlazorMovies.Shared.Entities.MovieActors", b =>
-                {
-                    b.HasOne("BlazorMovies.Shared.Entities.Movie", "Movie")
-                        .WithMany("MovieActors")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BlazorMovies.Shared.Entities.Person", "Person")
-                        .WithMany("MovieActors")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("BlazorMovies.Shared.Entities.MovieRating", b =>
                 {
                     b.HasOne("BlazorMovies.Shared.Entities.Movie", "Movie")
                         .WithMany()
                         .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BlazorMovies.Shared.Entities.MoviesActors", b =>
+                {
+                    b.HasOne("BlazorMovies.Shared.Entities.Movie", "Movie")
+                        .WithMany("MoviesActors")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BlazorMovies.Shared.Entities.Person", "Person")
+                        .WithMany("MoviesActors")
+                        .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

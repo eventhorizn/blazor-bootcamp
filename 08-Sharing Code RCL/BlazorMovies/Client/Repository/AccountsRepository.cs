@@ -1,11 +1,14 @@
 ﻿using BlazorMovies.Client.Helpers;
-using BlazorMovies.Shared.DTO;
+using BlazorMovies.Shared.DTOs;
+using BlazorMovies.Shared.Repositories;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorMovies.Client.Repository
 {
-    public class AccountsRepository : IAccountsRepository
+    public class AccountsRepository: IAccountsRepository
     {
         private readonly IHttpService httpService;
         private readonly string baseURL = "api/accounts";
@@ -15,10 +18,11 @@ namespace BlazorMovies.Client.Repository
             this.httpService = httpService;
         }
 
+
         public async Task<UserToken> Register(UserInfo userInfo)
         {
             var httpResponse = await httpService.Post<UserInfo, UserToken>($"{baseURL}/create", userInfo);
-            
+
             if (!httpResponse.Success)
             {
                 throw new ApplicationException(await httpResponse.GetBody());
@@ -37,18 +41,6 @@ namespace BlazorMovies.Client.Repository
             }
 
             return httpResponse.Response;
-        }
-
-        public async Task<UserToken> RenewToken()
-        {
-            var response = await httpService.Get<UserToken>($"{baseURL}/RenewToken");
-
-            if (!response.Success)
-            {
-                throw new ApplicationException(await response.GetBody());
-            }
-
-            return response.Response;
         }
     }
 }

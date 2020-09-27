@@ -1,7 +1,10 @@
 ﻿@page "/register"
+
 @inject IAccountsRepository accountsRepository
-@inject NavigationManager navManager
+@inject NavigationManager navigationManager
 @inject ILoginService loginService
+
+@using BlazorMovies.Client.Auth
 
 <h3>Register</h3>
 
@@ -25,6 +28,7 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Register</button>
+
 </EditForm>
 
 @code {
@@ -33,7 +37,7 @@
     private async Task CreateUser()
     {
         var userToken = await accountsRepository.Register(userInfo);
-        await loginService.Login(userToken);
-        navManager.NavigateTo("");
+        await loginService.Login(userToken.Token);
+        navigationManager.NavigateTo("");
     }
 }

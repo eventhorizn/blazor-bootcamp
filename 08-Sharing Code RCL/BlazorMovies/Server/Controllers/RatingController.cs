@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorMovies.Server.Controllers
@@ -12,7 +14,7 @@ namespace BlazorMovies.Server.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class RatingController : ControllerBase
+    public class RatingController: ControllerBase
     {
         private readonly ApplicationDbContext context;
         private readonly UserManager<IdentityUser> userManager;

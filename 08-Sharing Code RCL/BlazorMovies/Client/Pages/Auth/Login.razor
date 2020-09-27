@@ -1,11 +1,14 @@
 ﻿@page "/login"
+
 @inject IAccountsRepository accountsRepository
-@inject NavigationManager navManager
+@inject NavigationManager navigationManager
 @inject ILoginService loginService
+
+@using BlazorMovies.Client.Auth
 
 <h3>Login</h3>
 
-<EditForm Model="userInfo" OnValidSubmit="LoginUser">
+<EditForm Model="userInfo" OnValidSubmit="CreateUser">
     <DataAnnotationsValidator />
 
     <div class="form-group">
@@ -25,15 +28,16 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Login</button>
+
 </EditForm>
 
 @code {
     private UserInfo userInfo = new UserInfo();
 
-    private async Task LoginUser()
+    private async Task CreateUser()
     {
         var userToken = await accountsRepository.Login(userInfo);
-        await loginService.Login(userToken);
-        navManager.NavigateTo("");
+        await loginService.Login(userToken.Token);
+        navigationManager.NavigateTo("");
     }
 }

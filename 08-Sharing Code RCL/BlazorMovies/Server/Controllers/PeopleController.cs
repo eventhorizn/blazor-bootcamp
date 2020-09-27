@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BlazorMovies.Server.Helpers;
-using BlazorMovies.Shared.DTO;
+using BlazorMovies.Shared.DTOs;
 using BlazorMovies.Shared.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +22,7 @@ namespace BlazorMovies.Server.Controllers
         private readonly IFileStorageService fileStorageService;
         private readonly IMapper mapper;
 
-        public PeopleController(ApplicationDbContext context,
+        public PeopleController(ApplicationDbContext context, 
             IFileStorageService fileStorageService,
             IMapper mapper)
         {
@@ -32,21 +32,17 @@ namespace BlazorMovies.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Person>>> Get([FromQuery] PaginationDTO pagintationDTO)
+        public async Task<ActionResult<List<Person>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
             var queryable = context.People.AsQueryable();
-            await HttpContext.InsertPaginationParametersInResponse(queryable, pagintationDTO.RecordsPerPage);
-            return await queryable.Paginate(pagintationDTO).ToListAsync();
+            await HttpContext.InsertPaginationParametersInResponse(queryable, paginationDTO.RecordsPerPage);
+            return await queryable.Paginate(paginationDTO).ToListAsync();
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
         public async Task<ActionResult<Person>> Get(int id)
         {
-            var person = await context.People
-                .Include(x => x.MovieActors).ThenInclude(x => x.Movie)
-                .FirstOrDefaultAsync(x => x.Id == id);
-
+            var person = await context.People.FirstOrDefaultAsync(x => x.Id == id);
             if (person == null) { return NotFound(); }
             return person;
         }
@@ -59,7 +55,6 @@ namespace BlazorMovies.Server.Controllers
                 .Take(5)
                 .ToListAsync();
         }
-
 
         [HttpPost]
         public async Task<ActionResult<int>> Post(Person person)
@@ -84,14 +79,16 @@ namespace BlazorMovies.Server.Controllers
 
             personDB = mapper.Map(person, personDB);
 
-            if (!string.IsNullOrEmpty(person.Picture))
+            if (!string.IsNullOrWhiteSpace(person.Picture))
             {
                 var personPicture = Convert.FromBase64String(person.Picture);
-                personDB.Picture = await fileStorageService.EditFile(personPicture, "jpg", "people", personDB.Picture);
+                personDB.Picture = await fileStorageService.EditFile(personPicture,
+                    "jpg", "people", personDB.Picture);
             }
 
             await context.SaveChangesAsync();
             return NoContent();
+
         }
 
         [HttpDelete("{id}")]

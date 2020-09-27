@@ -1,4 +1,4 @@
-<CascadingValue Value="7" Name="Value">
+﻿<CascadingValue Value="7" Name="Value">
     <Router AppAssembly="@typeof(Program).Assembly"
             AdditionalAssemblies="new[] { typeof(Component1).Assembly }">
         <Found Context="routeData">
@@ -7,7 +7,7 @@
                     <text>Custom authorizing...</text>
                 </Authorizing>
                 <NotAuthorized>
-                    <text>Custom not authorizing...</text>
+                    <text>Custom not authorized</text>
                 </NotAuthorized>
             </AuthorizeRouteView>
         </Found>
@@ -20,4 +20,3 @@
         </NotFound>
     </Router>
 </CascadingValue>
-

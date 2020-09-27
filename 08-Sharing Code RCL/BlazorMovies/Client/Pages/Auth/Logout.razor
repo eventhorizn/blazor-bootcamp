@@ -1,14 +1,16 @@
 ﻿@page "/logout"
 
 @inject ILoginService loginService
-@inject NavigationManager navManager
+@inject NavigationManager navigationManager
 
-<text>Logging out...</text>
+@using BlazorMovies.Client.Auth
 
-@code {
+<text>Login out...</text>
+
+@code{
     protected async override Task OnInitializedAsync()
     {
         await loginService.Logout();
-        navManager.NavigateTo("");
+        navigationManager.NavigateTo("");
     }
 }

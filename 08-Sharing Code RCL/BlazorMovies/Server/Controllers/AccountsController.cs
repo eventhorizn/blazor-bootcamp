@@ -1,6 +1,4 @@
-﻿using BlazorMovies.Shared.DTO;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+﻿using BlazorMovies.Shared.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +15,7 @@ namespace BlazorMovies.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AccountsController : Controller
+    public class AccountsController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -37,7 +36,6 @@ namespace BlazorMovies.Server.Controllers
         {
             var user = new IdentityUser { UserName = model.Email, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
-
             if (result.Succeeded)
             {
                 return await BuildToken(model);
@@ -51,7 +49,7 @@ namespace BlazorMovies.Server.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult<UserToken>> Login([FromBody] UserInfo userInfo)
         {
-            var result = await _signInManager.PasswordSignInAsync(userInfo.Email, 
+            var result = await _signInManager.PasswordSignInAsync(userInfo.Email,
                 userInfo.Password, isPersistent: false, lockoutOnFailure: false);
 
             if (result.Succeeded)
@@ -64,43 +62,31 @@ namespace BlazorMovies.Server.Controllers
             }
         }
 
-        [HttpGet("RenewToken")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult<UserToken>> Renew()
-        {
-            var userInfo = new UserInfo()
-            {
-                Email = HttpContext.User.Identity.Name
-            };
-
-            return await BuildToken(userInfo);
-        }
-
-        private async Task<UserToken> BuildToken(UserInfo userInfo)
+        private async Task<UserToken> BuildToken(UserInfo userinfo)
         {
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Name, userInfo.Email),
-                new Claim(ClaimTypes.Email, userInfo.Email),
+                new Claim(ClaimTypes.Name, userinfo.Email),
+                new Claim(ClaimTypes.Email, userinfo.Email),
                 new Claim("myvalue", "whatever I want")
             };
 
-            var identityUser = await _userManager.FindByEmailAsync(userInfo.Email);
+            var identityUser = await _userManager.FindByEmailAsync(userinfo.Email);
             var claimsDB = await _userManager.GetClaimsAsync(identityUser);
 
             claims.AddRange(claimsDB);
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["jwt:key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var expiration = DateTime.UtcNow.AddYears(1);
 
             JwtSecurityToken token = new JwtSecurityToken(
-                issuer: null,
-                audience: null,
-                claims: claims,
-                expires: expiration,
-                signingCredentials: creds);
+                  issuer: null,
+               audience: null,
+               claims: claims,
+               expires: expiration,
+               signingCredentials: creds);
 
             return new UserToken()
             {

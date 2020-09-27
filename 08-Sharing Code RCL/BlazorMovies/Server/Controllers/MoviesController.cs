@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BlazorMovies.Server.Helpers;
-using BlazorMovies.Shared.DTO;
+using BlazorMovies.Shared.DTOs;
 using BlazorMovies.Shared.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -22,12 +22,13 @@ namespace BlazorMovies.Server.Controllers
         private readonly ApplicationDbContext context;
         private readonly IFileStorageService fileStorageService;
         private readonly IMapper mapper;
-        private string containerName = "movies";
         private readonly UserManager<IdentityUser> userManager;
+        private string containerName = "movies";
 
         public MoviesController(ApplicationDbContext context,
             IFileStorageService fileStorageService,
-            IMapper mapper, UserManager<IdentityUser> userManager)
+            IMapper mapper,
+            UserManager<IdentityUser> userManager)
         {
             this.context = context;
             this.fileStorageService = fileStorageService;
@@ -40,23 +41,79 @@ namespace BlazorMovies.Server.Controllers
         public async Task<ActionResult<IndexPageDTO>> Get()
         {
             var limit = 6;
-            var todaysDate = DateTime.Today;
 
             var moviesInTheaters = await context.Movies
                 .Where(x => x.InTheaters).Take(limit)
                 .OrderByDescending(x => x.ReleaseDate)
                 .ToListAsync();
 
+            var todaysDate = DateTime.Today;
+
             var upcomingReleases = await context.Movies
                 .Where(x => x.ReleaseDate > todaysDate)
-                .OrderBy(x => x.ReleaseDate)
-                .Take(limit).ToListAsync();
+                .OrderBy(x => x.ReleaseDate).Take(limit)
+                .ToListAsync();
 
             var response = new IndexPageDTO();
-            response.InTheaters = moviesInTheaters;
+            response.Intheaters = moviesInTheaters;
             response.UpcomingReleases = upcomingReleases;
 
             return response;
+
+        }
+
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<DetailsMovieDTO>> Get(int id)
+        {
+            var movie = await context.Movies.Where(x => x.Id == id)
+                .Include(x => x.MoviesGenres).ThenInclude(x => x.Genre)
+                .Include(x => x.MoviesActors).ThenInclude(x => x.Person)
+                .FirstOrDefaultAsync();
+
+            if (movie == null) { return NotFound(); }
+
+            var voteAverage = 0.0;
+            var uservote = 0;
+
+            if (await context.MovieRatings.AnyAsync(x => x.MovieId == id))
+            {
+                voteAverage = await context.MovieRatings.Where(x => x.MovieId == id)
+                    .AverageAsync(x => x.Rate);
+
+                if (HttpContext.User.Identity.IsAuthenticated)
+                {
+                    var user = await userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
+                    var userId = user.Id;
+
+                    var userVoteDB = await context.MovieRatings
+                        .FirstOrDefaultAsync(x => x.MovieId == id && x.UserId == userId);
+
+                    if (userVoteDB != null)
+                    {
+                        uservote = userVoteDB.Rate;
+                    }
+                }
+            }
+
+            movie.MoviesActors = movie.MoviesActors.OrderBy(x => x.Order).ToList();
+
+            var model = new DetailsMovieDTO();
+            model.Movie = movie;
+            model.Genres = movie.MoviesGenres.Select(x => x.Genre).ToList();
+            model.Actors = movie.MoviesActors.Select(x =>
+                new Person
+                {
+                    Name = x.Person.Name,
+                    Picture = x.Person.Picture,
+                    Character = x.Character,
+                    Id = x.PersonId
+
+                }).ToList();
+
+            model.UserVote = uservote;
+            model.AverageVote = voteAverage;
+            return model;
         }
 
         [HttpPost("filter")]
@@ -94,100 +151,28 @@ namespace BlazorMovies.Server.Controllers
 
             var movies = await moviesQueryable.Paginate(filterMoviesDTO.Pagination).ToListAsync();
 
-            if (filterMoviesDTO.MostVoted)
-            {
-                movies = OrderByRating(movies);
-            }
-
             return movies;
         }
 
-        private List<Movie> OrderByRating(List<Movie> movies)
-        {
-            foreach (var movie in movies)
-            {
-                if (context.MovieRatings.Any(x => x.MovieId == movie.Id))
-                    movie.Rating = context.MovieRatings.Where(x => x.MovieId == movie.Id)
-                        .Average(x => x.Rate);
-                else
-                    movie.Rating = 0;
-            }
 
-            return movies.OrderByDescending(x => x.Rating).ToList();
-        }
 
         [HttpGet("update/{id}")]
         public async Task<ActionResult<MovieUpdateDTO>> PutGet(int id)
         {
             var movieActionResult = await Get(id);
-
             if (movieActionResult.Result is NotFoundResult) { return NotFound(); }
 
             var movieDetailDTO = movieActionResult.Value;
-            var selectedGenreIds = movieDetailDTO.Genres.Select(x => x.Id).ToList();
+            var selectedGenresIds = movieDetailDTO.Genres.Select(x => x.Id).ToList();
             var notSelectedGenres = await context.Genres
-                .Where(x => !selectedGenreIds.Contains(x.Id)).ToListAsync();
+                .Where(x => !selectedGenresIds.Contains(x.Id))
+                .ToListAsync();
+
             var model = new MovieUpdateDTO();
             model.Movie = movieDetailDTO.Movie;
             model.SelectedGenres = movieDetailDTO.Genres;
             model.NotSelectedGenres = notSelectedGenres;
             model.Actors = movieDetailDTO.Actors;
-
-            return model;
-        }
-
-        [HttpGet("{id}")]
-        [AllowAnonymous]
-        public async Task<ActionResult<DetailsMovieDTO>> Get(int id)
-        {
-            var movie = await context.Movies.Where(x => x.Id == id)
-                .Include(x => x.MoviesGenres).ThenInclude(x => x.Genre)
-                .Include(x => x.MovieActors).ThenInclude(x => x.Person)
-                .FirstOrDefaultAsync();
-
-            if (movie == null) { return NotFound(); }
-
-            var voteAverage = 0.0;
-            var userVote = 0;
-
-            if (await context.MovieRatings.AnyAsync(x => x.MovieId == id))
-            {
-                voteAverage = await context.MovieRatings.Where(x => x.MovieId == id)
-                    .AverageAsync(x => x.Rate);
-
-                if (HttpContext.User.Identity.IsAuthenticated)
-                {
-                    var user = await userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
-                    var userId = user.Id;
-
-                    var userVoteDB = await context.MovieRatings
-                        .FirstOrDefaultAsync(x => x.MovieId == id && x.UserId == userId);
-
-                    if (userVoteDB != null)
-                    {
-                        userVote = userVoteDB.Rate;
-                    }
-                }
-            }
-
-            movie.MovieActors = movie.MovieActors.OrderBy(x => x.Order).ToList();
-
-            var model = new DetailsMovieDTO();
-            model.Movie = movie;
-            model.Genres = movie.MoviesGenres.Select(x => x.Genre).ToList();
-            model.Actors = movie.MovieActors.Select(x =>
-                new Person
-                {
-                    Name = x.Person.Name,
-                    Picture = x.Person.Picture,
-                    Character = x.Character,
-                    Id = x.PersonId
-                }
-            ).ToList();
-
-            model.UserVote = userVote;
-            model.AverageVote = voteAverage;
-
             return model;
         }
 
@@ -196,15 +181,15 @@ namespace BlazorMovies.Server.Controllers
         {
             if (!string.IsNullOrWhiteSpace(movie.Poster))
             {
-                var personPicture = Convert.FromBase64String(movie.Poster);
-                movie.Poster = await fileStorageService.SaveFile(personPicture, "jpg", containerName);
+                var poster = Convert.FromBase64String(movie.Poster);
+                movie.Poster = await fileStorageService.SaveFile(poster, "jpg", containerName);
             }
 
-            if (movie.MovieActors != null)
+            if (movie.MoviesActors != null)
             {
-                for (int i = 0; i < movie.MovieActors.Count; i++)
+                for (int i = 0; i < movie.MoviesActors.Count; i++)
                 {
-                    movie.MovieActors[i].Order = i + 1;
+                    movie.MoviesActors[i].Order = i + 1;
                 }
             }
 
@@ -229,22 +214,22 @@ namespace BlazorMovies.Server.Controllers
                     "jpg", containerName, movieDB.Poster);
             }
 
-            await context.Database.
-                ExecuteSqlInterpolatedAsync($"delete from MovieActors where MovieId = {movie.Id}; delete from MoviesGenres where MovieId = {movie.Id}");
+            await context.Database.ExecuteSqlInterpolatedAsync($"delete from MoviesActors where MovieId = {movie.Id}; delete from MoviesGenres where MovieId = {movie.Id}");
 
-            if (movie.MovieActors != null)
+            if (movie.MoviesActors != null)
             {
-                for (int i = 0; i < movie.MovieActors.Count; i++)
+                for (int i = 0; i < movie.MoviesActors.Count; i++)
                 {
-                    movie.MovieActors[i].Order = i + 1;
+                    movie.MoviesActors[i].Order = i + 1;
                 }
             }
 
-            movieDB.MovieActors = movie.MovieActors;
+            movieDB.MoviesActors = movie.MoviesActors;
             movieDB.MoviesGenres = movie.MoviesGenres;
 
             await context.SaveChangesAsync();
             return NoContent();
+
         }
 
         [HttpDelete("{id}")]

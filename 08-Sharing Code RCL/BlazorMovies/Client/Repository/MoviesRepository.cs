@@ -1,6 +1,7 @@
 ﻿using BlazorMovies.Client.Helpers;
-using BlazorMovies.Shared.DTO;
+using BlazorMovies.Shared.DTOs;
 using BlazorMovies.Shared.Entities;
+using BlazorMovies.Shared.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BlazorMovies.Client.Repository
 {
-    public class MoviesRepository : IMoviesRepository
+    public class MoviesRepository: IMoviesRepository
     {
         private readonly IHttpService httpService;
         private string url = "api/movies";
@@ -28,7 +29,7 @@ namespace BlazorMovies.Client.Repository
             return await httpService.GetHelper<MovieUpdateDTO>($"{url}/update/{id}");
         }
 
-        public async Task<DetailsMovieDTO> GetDetatilsMovieDTO(int id)
+        public async Task<DetailsMovieDTO> GetDetailsMovieDTO(int id)
         {
             return await httpService.GetHelper<DetailsMovieDTO>($"{url}/{id}");
         }
@@ -49,9 +50,10 @@ namespace BlazorMovies.Client.Repository
         public async Task<int> CreateMovie(Movie movie)
         {
             var response = await httpService.Post<Movie, int>(url, movie);
-
             if (!response.Success)
+            {
                 throw new ApplicationException(await response.GetBody());
+            }
 
             return response.Response;
         }
@@ -65,12 +67,13 @@ namespace BlazorMovies.Client.Repository
             }
         }
 
-        public async Task DeleteMovie(int id)
+        public async Task DeleteMovie(int Id)
         {
-            var response = await httpService.Delete($"{url}/{id}");
-
+            var response = await httpService.Delete($"{url}/{Id}");
             if (!response.Success)
+            {
                 throw new ApplicationException(await response.GetBody());
+            }
         }
     }
 }

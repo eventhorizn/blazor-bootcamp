@@ -1,26 +1,28 @@
 ﻿using BlazorMovies.Server.Helpers;
-using BlazorMovies.Shared.DTO;
+using BlazorMovies.Shared.DTOs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Threading.Tasks;
 
 namespace BlazorMovies.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-    public class UsersController :ControllerBase
+    public class UsersController: ControllerBase
     {
         private readonly ApplicationDbContext context;
         private readonly UserManager<IdentityUser> userManager;
 
-        public UsersController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public UsersController(ApplicationDbContext context,
+            UserManager<IdentityUser> userManager)
         {
             this.context = context;
             this.userManager = userManager;
@@ -30,8 +32,7 @@ namespace BlazorMovies.Server.Controllers
         public async Task<ActionResult<List<UserDTO>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
             var queryable = context.Users.AsQueryable();
-            await HttpContext.InsertPaginationParametersInResponse(queryable, 
-                paginationDTO.RecordsPerPage);
+            await HttpContext.InsertPaginationParametersInResponse(queryable, paginationDTO.RecordsPerPage);
             return await queryable.Paginate(paginationDTO)
                 .Select(x => new UserDTO { Email = x.Email, UserId = x.Id }).ToListAsync();
         }

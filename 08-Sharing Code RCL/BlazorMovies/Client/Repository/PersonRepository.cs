@@ -1,13 +1,15 @@
 ﻿using BlazorMovies.Client.Helpers;
-using BlazorMovies.Shared.DTO;
+using BlazorMovies.Shared.DTOs;
 using BlazorMovies.Shared.Entities;
+using BlazorMovies.Shared.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorMovies.Client.Repository
 {
-    public class PersonRepository : IPersonRepository
+    public class PersonRepository: IPersonRepository
     {
         private readonly IHttpService httpService;
         private string url = "api/people";
@@ -29,7 +31,6 @@ namespace BlazorMovies.Client.Repository
             {
                 throw new ApplicationException(await response.GetBody());
             }
-
             return response.Response;
         }
 
@@ -38,29 +39,31 @@ namespace BlazorMovies.Client.Repository
             return await httpService.GetHelper<Person>($"{url}/{id}");
         }
 
-
         public async Task CreatePerson(Person person)
         {
             var response = await httpService.Post(url, person);
-
             if (!response.Success)
+            {
                 throw new ApplicationException(await response.GetBody());
+            }
         }
 
         public async Task UpdatePerson(Person person)
         {
             var response = await httpService.Put(url, person);
-
             if (!response.Success)
+            {
                 throw new ApplicationException(await response.GetBody());
+            }
         }
 
-        public async Task DeletePerson(int id)
+        public async Task DeletePerson(int Id)
         {
-            var response = await httpService.Delete($"{url}/{id}");
-
+            var response = await httpService.Delete($"{url}/{Id}");
             if (!response.Success)
+            {
                 throw new ApplicationException(await response.GetBody());
+            }
         }
     }
 }
