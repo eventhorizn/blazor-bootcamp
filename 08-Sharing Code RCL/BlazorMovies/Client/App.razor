@@ -1,20 +1,23 @@
-<Router AppAssembly="@typeof(Program).Assembly"
-        AdditionalAssemblies="new[] { typeof(Component1).Assembly }">
-    <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-            <Authorizing>
-                <text>Custom authorizing...</text>
-            </Authorizing>
-            <NotAuthorized>
-                <text>Custom not authorizing...</text>
-            </NotAuthorized>
-        </AuthorizeRouteView>
-    </Found>
-    <NotFound>
-        <CascadingAuthenticationState>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <CustomNotFound />
-            </LayoutView>
-        </CascadingAuthenticationState>
-    </NotFound>
-</Router>
+<CascadingValue Value="7" Name="Value">
+    <Router AppAssembly="@typeof(Program).Assembly"
+            AdditionalAssemblies="new[] { typeof(Component1).Assembly }">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <Authorizing>
+                    <text>Custom authorizing...</text>
+                </Authorizing>
+                <NotAuthorized>
+                    <text>Custom not authorizing...</text>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <CascadingAuthenticationState>
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <CustomNotFound />
+                </LayoutView>
+            </CascadingAuthenticationState>
+        </NotFound>
+    </Router>
+</CascadingValue>
+
