@@ -1,0 +1,31 @@
+﻿@page "/counter"
+@inject IDisplayMessage displayMessage
+
+<h1>Counter</h1>
+
+<p>Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+
+    // Dangerous, don't use this for ServerSide
+    //protected async override Task OnInitializedAsync()
+    //{
+    //    await displayMessage.DisplaySuccessMessage("Component has loaded");
+    //}
+
+    // proper call for Server Side
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await displayMessage.DisplaySuccessMessage("Component has loaded");
+    }
+
+    private async Task IncrementCount()
+    {
+        await displayMessage.DisplaySuccessMessage("count has been incremented");
+        currentCount++;
+    }
+}
