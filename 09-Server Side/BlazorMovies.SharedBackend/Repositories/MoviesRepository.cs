@@ -13,13 +13,10 @@ namespace BlazorMovies.SharedBackend.Repositories
     public class MoviesRepository : IMoviesRepository
     {
         private readonly ApplicationDbContext context;
-        private readonly IAuthenticationStateService authStateService;
 
-        public MoviesRepository(ApplicationDbContext context, 
-            IAuthenticationStateService authStateService)
+        public MoviesRepository(ApplicationDbContext context)
         {
             this.context = context;
-            this.authStateService = authStateService;
         }
 
         public Task<int> CreateMovie(Movie movie)
@@ -39,8 +36,6 @@ namespace BlazorMovies.SharedBackend.Repositories
 
         public async Task<IndexPageDTO> GetIndexPageDTO()
         {
-            var userId = await authStateService.GetCurrentUserId();
-
             var limit = 6;
 
             var moviesInTheaters = await context.Movies
