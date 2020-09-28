@@ -11,6 +11,8 @@ using BlazorMovies.Components.Helpers;
 using BlazorMovies.Shared.Repositories;
 using BlazorMovies.SharedBackend.Repositories;
 using BlazorMovies.SharedBackend;
+using BlazorMovies.SharedBackend.Helpers;
+using BlazorMovies.ServerSide.Helpers;
 
 namespace BlazorMovies.ServerSide
 {
@@ -29,10 +31,11 @@ namespace BlazorMovies.ServerSide
         {
             services.AddTransient<IDisplayMessage, DisplayMessage>();
             services.AddBlazorMovies();
+            services.AddScoped<IAuthenticationStateService, AuthenticationStateServerSide>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
