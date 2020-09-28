@@ -1,21 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BlazorMovies.ServerSide.Areas.Identity;
-using BlazorMovies.ServerSide.Data;
 using BlazorMovies.Components.Helpers;
+using BlazorMovies.Shared.Repositories;
+using BlazorMovies.SharedBackend.Repositories;
+using BlazorMovies.SharedBackend;
 
 namespace BlazorMovies.ServerSide
 {
@@ -33,6 +28,7 @@ namespace BlazorMovies.ServerSide
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IDisplayMessage, DisplayMessage>();
+            services.AddBlazorMovies();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -41,7 +37,6 @@ namespace BlazorMovies.ServerSide
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-            services.AddSingleton<WeatherForecastService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

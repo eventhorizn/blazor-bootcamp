@@ -29,7 +29,7 @@
             var movieId = await moviesRepository.CreateMovie(Movie);
             navigationManager.NavigateTo($"movie/{movieId}/{Movie.Title.Replace(" ", "-")}");
         }
-        catch (Exception ex)
+        catch
         {
 
         }

@@ -1,5 +1,8 @@
 using AutoMapper;
 using BlazorMovies.Server.Helpers;
+using BlazorMovies.Shared.Repositories;
+using BlazorMovies.SharedBackend;
+using BlazorMovies.SharedBackend.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -53,6 +56,7 @@ namespace BlazorMovies.Server
             services.AddAutoMapper(typeof(Startup));
 
             services.AddScoped<IFileStorageService, AzureStorageService>();
+            services.AddBlazorMovies();
 
             services.AddMvc()
                 .AddNewtonsoftJson(options =>
