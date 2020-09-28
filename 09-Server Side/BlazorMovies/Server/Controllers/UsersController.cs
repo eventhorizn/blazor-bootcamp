@@ -12,6 +12,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BlazorMovies.SharedBackend.Helpers;
+using BlazorMovies.Shared.Repositories;
 
 namespace BlazorMovies.Server.Controllers
 {
@@ -20,45 +21,38 @@ namespace BlazorMovies.Server.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public class UsersController: ControllerBase
     {
-        private readonly ApplicationDbContext context;
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly IUsersRepository usersRepository;
 
-        public UsersController(ApplicationDbContext context,
-            UserManager<IdentityUser> userManager)
+        public UsersController(IUsersRepository usersRepository)
         {
-            this.context = context;
-            this.userManager = userManager;
+            this.usersRepository = usersRepository;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<UserDTO>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
-            var queryable = context.Users.AsQueryable();
-            await HttpContext.InsertPaginationParametersInResponse(queryable, paginationDTO.RecordsPerPage);
-            return await queryable.Paginate(paginationDTO)
-                .Select(x => new UserDTO { Email = x.Email, UserId = x.Id }).ToListAsync();
+            var paginatedResponse = await usersRepository.GetUsers(paginationDTO);
+            HttpContext.InsertPaginationParametersInResponse(paginatedResponse.TotalAmountPages);
+            return paginatedResponse.Response;
         }
 
         [HttpGet("roles")]
         public async Task<ActionResult<List<RoleDTO>>> Get()
         {
-            return await context.Roles
-                .Select(x => new RoleDTO { RoleName = x.Name }).ToListAsync();
+            return await usersRepository.GetRoles();
         }
 
         [HttpPost("assignRole")]
         public async Task<ActionResult> AssignRole(EditRoleDTO editRoleDTO)
         {
-            var user = await userManager.FindByIdAsync(editRoleDTO.UserId);
-            await userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, editRoleDTO.RoleName));
+            await usersRepository.AssignRole(editRoleDTO);
             return NoContent();
         }
 
         [HttpPost("removeRole")]
         public async Task<ActionResult> RemoveRole(EditRoleDTO editRoleDTO)
         {
-            var user = await userManager.FindByIdAsync(editRoleDTO.UserId);
-            await userManager.RemoveClaimAsync(user, new Claim(ClaimTypes.Role, editRoleDTO.RoleName));
+            await usersRepository.RemoveRole(editRoleDTO);
             return NoContent();
         }
     }
