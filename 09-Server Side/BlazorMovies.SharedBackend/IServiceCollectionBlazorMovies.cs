@@ -1,9 +1,6 @@
 ﻿using BlazorMovies.Shared.Repositories;
 using BlazorMovies.SharedBackend.Repositories;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BlazorMovies.SharedBackend
 {
@@ -12,6 +9,7 @@ namespace BlazorMovies.SharedBackend
         public static IServiceCollection AddBlazorMovies(this IServiceCollection services)
         {
             services.AddScoped<IMoviesRepository, MoviesRepository>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
             return services;
         }
     }

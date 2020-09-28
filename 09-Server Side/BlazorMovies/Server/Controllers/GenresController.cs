@@ -1,12 +1,9 @@
 ﻿using BlazorMovies.Shared.Entities;
-using BlazorMovies.SharedBackend;
+using BlazorMovies.Shared.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlazorMovies.Server.Controllers
@@ -16,24 +13,24 @@ namespace BlazorMovies.Server.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public class GenresController : ControllerBase
     {
-        private readonly ApplicationDbContext context;
+        private readonly IGenreRepository genreRepository;
 
-        public GenresController(ApplicationDbContext context)
+        public GenresController(IGenreRepository genreRepository)
         {
-            this.context = context;
+            this.genreRepository = genreRepository;
         }
 
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult<List<Genre>>> Get()
         {
-            return await context.Genres.ToListAsync();
+            return await genreRepository.GetGenres();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Genre>> Get(int id)
         {
-            var genre = await context.Genres.FirstOrDefaultAsync(x => x.Id == id);
+            var genre = await genreRepository.GetGenre(id);
             if (genre == null) { return NotFound(); }
             return genre;
         }
@@ -41,30 +38,27 @@ namespace BlazorMovies.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> Post(Genre genre)
         {
-            context.Add(genre);
-            await context.SaveChangesAsync();
+            await genreRepository.CreateGenre(genre);
             return genre.Id;
         }
 
         [HttpPut]
         public async Task<ActionResult> Put(Genre genre)
         {
-            context.Attach(genre).State = EntityState.Modified;
-            await context.SaveChangesAsync();
+            await genreRepository.UpdateGenre(genre);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var genre = await context.Genres.FirstOrDefaultAsync(x => x.Id == id);
+            var genre = await genreRepository.GetGenre(id);
             if (genre == null)
             {
                 return NotFound();
             }
 
-            context.Remove(genre);
-            await context.SaveChangesAsync();
+            await genreRepository.DeleteGenre(id);
             return NoContent();
         }
     }
