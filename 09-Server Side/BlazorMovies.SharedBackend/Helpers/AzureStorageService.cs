@@ -2,13 +2,10 @@
 using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
-namespace BlazorMovies.Server.Helpers
+namespace BlazorMovies.SharedBackend.Helpers
 {
     public class AzureStorageService : IFileStorageService
     {

@@ -1,4 +1,6 @@
-﻿using BlazorMovies.Shared.Repositories;
+﻿using AutoMapper;
+using BlazorMovies.Shared.Repositories;
+using BlazorMovies.SharedBackend.Helpers;
 using BlazorMovies.SharedBackend.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +12,10 @@ namespace BlazorMovies.SharedBackend
         {
             services.AddScoped<IMoviesRepository, MoviesRepository>();
             services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddAutoMapper(new[] { typeof(AutomapperProfiles).Assembly });
+
+            services.AddScoped<IFileStorageService, AzureStorageService>();
             return services;
         }
     }

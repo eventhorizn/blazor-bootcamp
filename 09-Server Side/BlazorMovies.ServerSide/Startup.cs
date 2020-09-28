@@ -8,11 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BlazorMovies.ServerSide.Areas.Identity;
 using BlazorMovies.Components.Helpers;
-using BlazorMovies.Shared.Repositories;
-using BlazorMovies.SharedBackend.Repositories;
 using BlazorMovies.SharedBackend;
 using BlazorMovies.SharedBackend.Helpers;
 using BlazorMovies.ServerSide.Helpers;
+using Tewr.Blazor.FileReader;
 
 namespace BlazorMovies.ServerSide
 {
@@ -32,6 +31,7 @@ namespace BlazorMovies.ServerSide
             services.AddTransient<IDisplayMessage, DisplayMessage>();
             services.AddBlazorMovies();
             services.AddScoped<IAuthenticationStateService, AuthenticationStateServerSide>();
+            services.AddFileReaderService(options => options.InitializeOnFirstCall = true);
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));

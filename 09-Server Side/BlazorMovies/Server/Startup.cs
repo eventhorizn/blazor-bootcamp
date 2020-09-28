@@ -54,9 +54,7 @@ namespace BlazorMovies.Server
                     ClockSkew = TimeSpan.Zero
                 });
 
-            services.AddAutoMapper(typeof(Startup));
-
-            services.AddScoped<IFileStorageService, AzureStorageService>();
+            
             services.AddBlazorMovies();
             services.AddScoped<IAuthenticationStateService, AuthenticationStateServiceWebAssembly>();
 

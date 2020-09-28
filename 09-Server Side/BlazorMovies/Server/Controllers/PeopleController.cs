@@ -2,6 +2,7 @@
 using BlazorMovies.Server.Helpers;
 using BlazorMovies.Shared.DTOs;
 using BlazorMovies.Shared.Entities;
+using BlazorMovies.Shared.Repositories;
 using BlazorMovies.SharedBackend;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -19,31 +20,27 @@ namespace BlazorMovies.Server.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public class PeopleController : ControllerBase
     {
-        private readonly ApplicationDbContext context;
-        private readonly IFileStorageService fileStorageService;
-        private readonly IMapper mapper;
+        private readonly IPersonRepository personRepository;
 
-        public PeopleController(ApplicationDbContext context, 
-            IFileStorageService fileStorageService,
-            IMapper mapper)
+        public PeopleController(IPersonRepository personRepository)
         {
-            this.context = context;
-            this.fileStorageService = fileStorageService;
-            this.mapper = mapper;
+            this.personRepository = personRepository;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Person>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
-            var queryable = context.People.AsQueryable();
-            await HttpContext.InsertPaginationParametersInResponse(queryable, paginationDTO.RecordsPerPage);
-            return await queryable.Paginate(paginationDTO).ToListAsync();
+            var paginatedResponse = await personRepository.GetPeople(paginationDTO);
+
+            HttpContext.InsertPaginationParametersInResponse(paginatedResponse.TotalAmountPages);
+
+            return paginatedResponse.Response;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Person>> Get(int id)
         {
-            var person = await context.People.FirstOrDefaultAsync(x => x.Id == id);
+            var person = await personRepository.GetPersonById(id);
             if (person == null) { return NotFound(); }
             return person;
         }
@@ -51,43 +48,24 @@ namespace BlazorMovies.Server.Controllers
         [HttpGet("search/{searchText}")]
         public async Task<ActionResult<List<Person>>> FilterByName(string searchText)
         {
-            if (string.IsNullOrWhiteSpace(searchText)) { return new List<Person>(); }
-            return await context.People.Where(x => x.Name.Contains(searchText))
-                .Take(5)
-                .ToListAsync();
+            return await personRepository.GetPeopleByName(searchText);
         }
 
         [HttpPost]
         public async Task<ActionResult<int>> Post(Person person)
         {
-            if (!string.IsNullOrWhiteSpace(person.Picture))
-            {
-                var personPicture = Convert.FromBase64String(person.Picture);
-                person.Picture = await fileStorageService.SaveFile(personPicture, "jpg", "people");
-            }
-
-            context.Add(person);
-            await context.SaveChangesAsync();
+            await personRepository.CreatePerson(person);
             return person.Id;
         }
 
         [HttpPut]
         public async Task<ActionResult> Put(Person person)
         {
-            var personDB = await context.People.FirstOrDefaultAsync(x => x.Id == person.Id);
+            var personDB = await personRepository.GetPersonById(person.Id);
 
             if (personDB == null) { return NotFound(); }
 
-            personDB = mapper.Map(person, personDB);
-
-            if (!string.IsNullOrWhiteSpace(person.Picture))
-            {
-                var personPicture = Convert.FromBase64String(person.Picture);
-                personDB.Picture = await fileStorageService.EditFile(personPicture,
-                    "jpg", "people", personDB.Picture);
-            }
-
-            await context.SaveChangesAsync();
+            await personRepository.UpdatePerson(person);
             return NoContent();
 
         }
@@ -95,14 +73,13 @@ namespace BlazorMovies.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var person = await context.People.FirstOrDefaultAsync(x => x.Id == id);
+            var person = await personRepository.GetPersonById(id);
             if (person == null)
             {
                 return NotFound();
             }
 
-            context.Remove(person);
-            await context.SaveChangesAsync();
+            await personRepository.DeletePerson(id);
             return NoContent();
         }
     }
