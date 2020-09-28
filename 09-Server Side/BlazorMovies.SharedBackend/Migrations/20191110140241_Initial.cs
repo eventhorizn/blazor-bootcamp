@@ -80,7 +80,7 @@ namespace BlazorMovies.SharedBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MoviesActors",
+                name: "MovieActors",
                 columns: table => new
                 {
                     PersonId = table.Column<int>(nullable: false),
@@ -90,15 +90,15 @@ namespace BlazorMovies.SharedBackend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MoviesActors", x => new { x.MovieId, x.PersonId });
+                    table.PrimaryKey("PK_MovieActors", x => new { x.MovieId, x.PersonId });
                     table.ForeignKey(
-                        name: "FK_MoviesActors_Movies_MovieId",
+                        name: "FK_MovieActors_Movies_MovieId",
                         column: x => x.MovieId,
                         principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MoviesActors_People_PersonId",
+                        name: "FK_MovieActors_People_PersonId",
                         column: x => x.PersonId,
                         principalTable: "People",
                         principalColumn: "Id",
@@ -106,8 +106,8 @@ namespace BlazorMovies.SharedBackend.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_MoviesActors_PersonId",
-                table: "MoviesActors",
+                name: "IX_MovieActors_PersonId",
+                table: "MovieActors",
                 column: "PersonId");
 
             migrationBuilder.CreateIndex(
@@ -119,7 +119,7 @@ namespace BlazorMovies.SharedBackend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "MoviesActors");
+                name: "MovieActors");
 
             migrationBuilder.DropTable(
                 name: "MoviesGenres");

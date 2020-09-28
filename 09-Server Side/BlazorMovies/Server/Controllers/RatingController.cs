@@ -1,4 +1,5 @@
 ﻿using BlazorMovies.Shared.Entities;
+using BlazorMovies.Shared.Repositories;
 using BlazorMovies.SharedBackend;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -17,38 +18,17 @@ namespace BlazorMovies.Server.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RatingController: ControllerBase
     {
-        private readonly ApplicationDbContext context;
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly IRatingRepository ratingRepository;
 
-        public RatingController(ApplicationDbContext context,
-            UserManager<IdentityUser> userManager)
+        public RatingController(IRatingRepository ratingRepository)
         {
-            this.context = context;
-            this.userManager = userManager;
+            this.ratingRepository = ratingRepository;
         }
 
         [HttpPost]
         public async Task<ActionResult> Rate(MovieRating movieRating)
         {
-            var user = await userManager.FindByEmailAsync(HttpContext.User.Identity.Name);
-            var userId = user.Id;
-
-            var currentRating = await context.MovieRatings
-                .FirstOrDefaultAsync(x => x.MovieId == movieRating.MovieId &&
-                x.UserId == userId);
-
-            if (currentRating == null)
-            {
-                movieRating.UserId = userId;
-                movieRating.RatingDate = DateTime.Today;
-                context.Add(movieRating);
-                await context.SaveChangesAsync();
-            }
-            else
-            {
-                currentRating.Rate = movieRating.Rate;
-                await context.SaveChangesAsync();
-            }
+            await ratingRepository.Vote(movieRating);
 
             return NoContent();
         }

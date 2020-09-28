@@ -107,8 +107,8 @@
         Movie.MoviesGenres = Selected
             .Select(x => new MoviesGenres { GenreId = int.Parse(x.Key) }).ToList();
 
-        Movie.MoviesActors = SelectedActors
-            .Select(x => new MoviesActors { PersonId = x.Id, Character = x.Character }).ToList();
+        Movie.MovieActors = SelectedActors
+            .Select(x => new MovieActors { PersonId = x.Id, Character = x.Character }).ToList();
 
         if (!string.IsNullOrWhiteSpace(Movie.Poster)) { imageURL = null; }
 

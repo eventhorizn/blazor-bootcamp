@@ -14,7 +14,7 @@ namespace BlazorMovies.SharedBackend
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<MoviesActors>().HasKey(x => new { x.MovieId, x.PersonId });
+            modelBuilder.Entity<MovieActors>().HasKey(x => new { x.MovieId, x.PersonId });
             modelBuilder.Entity<MoviesGenres>().HasKey(x => new { x.MovieId, x.GenreId });
 
             //var userAdminId = "df4d3070-5e26-4f78-bdd6-f9bb12f55a40";
@@ -51,7 +51,7 @@ namespace BlazorMovies.SharedBackend
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Person> People { get; set; }
-        public DbSet<MoviesActors> MoviesActors { get; set; }
+        public DbSet<MovieActors> MovieActors { get; set; }
         public DbSet<MoviesGenres> MoviesGenres { get; set; }
         public DbSet<MovieRating> MovieRatings { get; set; }
     }

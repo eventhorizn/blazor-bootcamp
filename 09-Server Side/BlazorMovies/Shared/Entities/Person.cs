@@ -14,7 +14,7 @@ namespace BlazorMovies.Shared.Entities
         public string Picture { get; set; }
         [Required]
         public DateTime? DateOfBirth { get; set; }
-        public List<MoviesActors> MoviesActors { get; set; } = new List<MoviesActors>();
+        public List<MovieActors> MovieActors { get; set; } = new List<MovieActors>();
         [NotMapped]
         public string Character { get; set; }
 

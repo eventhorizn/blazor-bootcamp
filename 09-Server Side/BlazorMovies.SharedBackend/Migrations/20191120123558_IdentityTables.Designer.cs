@@ -68,7 +68,7 @@ namespace BlazorMovies.SharedBackend.Migrations
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("BlazorMovies.Shared.Entities.MoviesActors", b =>
+            modelBuilder.Entity("BlazorMovies.Shared.Entities.MovieActors", b =>
                 {
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
@@ -86,7 +86,7 @@ namespace BlazorMovies.SharedBackend.Migrations
 
                     b.HasIndex("PersonId");
 
-                    b.ToTable("MoviesActors");
+                    b.ToTable("MovieActors");
                 });
 
             modelBuilder.Entity("BlazorMovies.Shared.Entities.MoviesGenres", b =>
@@ -325,16 +325,16 @@ namespace BlazorMovies.SharedBackend.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("BlazorMovies.Shared.Entities.MoviesActors", b =>
+            modelBuilder.Entity("BlazorMovies.Shared.Entities.MovieActors", b =>
                 {
                     b.HasOne("BlazorMovies.Shared.Entities.Movie", "Movie")
-                        .WithMany("MoviesActors")
+                        .WithMany("MovieActors")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("BlazorMovies.Shared.Entities.Person", "Person")
-                        .WithMany("MoviesActors")
+                        .WithMany("MovieActors")
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
