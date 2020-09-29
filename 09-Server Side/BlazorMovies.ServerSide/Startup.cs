@@ -28,6 +28,11 @@ namespace BlazorMovies.ServerSide
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR().AddAzureSignalR(options =>
+            {
+                options.ConnectionString = Configuration.GetConnectionString("signalR");
+                options.ServerStickyMode = Microsoft.Azure.SignalR.ServerStickyMode.Required;
+            });
             services.AddTransient<IDisplayMessage, DisplayMessage>();
             services.AddBlazorMovies();
             services.AddScoped<IAuthenticationStateService, AuthenticationStateServerSide>();
