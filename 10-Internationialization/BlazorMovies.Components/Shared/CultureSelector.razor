@@ -12,6 +12,8 @@
 </select>
 
 @code {
+    [CascadingParameter] public AppMode AppMode { get; set; }
+
     CultureInfo[] cultures = new[]
     {
         new CultureInfo("en-US"),
@@ -25,10 +27,22 @@
         get => CultureInfo.CurrentUICulture;
         set
         {
-            var jsInProcessRuntime = (IJSInProcessRuntime)js;
-            jsInProcessRuntime.InvokeVoid("setInLocalStorage", "culture", value.Name);
+            if (AppMode == AppMode.WebAssembly)
+            {
+                var jsInProcessRuntime = (IJSInProcessRuntime)js;
+                jsInProcessRuntime.InvokeVoid("setInLocalStorage", "culture", value.Name);
 
-            navManager.NavigateTo(navManager.Uri, forceLoad: true);
+                navManager.NavigateTo(navManager.Uri, forceLoad: true);
+            }
+            else
+            {
+                var culture = value.Name;
+                var uri = new Uri(navManager.Uri)
+                    .GetComponents(UriComponents.PathAndQuery, UriFormat.Unescaped);
+                var query = $"?culture={Uri.EscapeDataString(culture)}&redirectionURI={Uri.EscapeDataString(uri)}";
+                navManager.NavigateTo("/culture/SetCulture" + query, forceLoad: true);
+            }
+
         }
     }
 }

@@ -12,6 +12,8 @@ using BlazorMovies.SharedBackend;
 using BlazorMovies.SharedBackend.Helpers;
 using BlazorMovies.ServerSide.Helpers;
 using Tewr.Blazor.FileReader;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace BlazorMovies.ServerSide
 {
@@ -33,6 +35,8 @@ namespace BlazorMovies.ServerSide
                 options.ConnectionString = Configuration.GetConnectionString("signalR");
                 options.ServerStickyMode = Microsoft.Azure.SignalR.ServerStickyMode.Required;
             });
+
+            services.AddLocalization();
             services.AddTransient<IDisplayMessage, DisplayMessage>();
             services.AddBlazorMovies();
             services.AddScoped<IAuthenticationStateService, AuthenticationStateServerSide>();
@@ -61,6 +65,23 @@ namespace BlazorMovies.ServerSide
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            var supportedCultures = new[]
+            {
+                new CultureInfo("en-US"),
+                new CultureInfo("es-US"),
+                new CultureInfo("es-DO"),
+                new CultureInfo("fr-FR"),
+                new CultureInfo("es"),
+                new CultureInfo("en")
+            };
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures,
+                DefaultRequestCulture = new RequestCulture("en-US")
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
