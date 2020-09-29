@@ -120,6 +120,9 @@
   <data name="intheaters" xml:space="preserve">
     <value>En cine</value>
   </data>
+  <data name="required" xml:space="preserve">
+    <value>Este campo es requerido</value>
+  </data>
   <data name="upcomingreleases" xml:space="preserve">
     <value>Proximos Estrenos</value>
   </data>
