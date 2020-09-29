@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorMovies.Shared", "Blaz
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorMovies.Components", "BlazorMovies.Components\BlazorMovies.Components.csproj", "{D5AD305A-DDA2-44E9-ADE0-A61447A88AE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorMovies.ServerSide", "BlazorMovies.ServerSide\BlazorMovies.ServerSide.csproj", "{5DB6F53F-47F9-4F34-AAEC-CB1ADC275383}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorMovies.ServerSide", "BlazorMovies.ServerSide\BlazorMovies.ServerSide.csproj", "{5DB6F53F-47F9-4F34-AAEC-CB1ADC275383}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorMovies.SharedBackend", "BlazorMovies.SharedBackend\BlazorMovies.SharedBackend.csproj", "{D23B15CC-BE05-4E06-BC95-87D381C984C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorMovies.SharedBackend", "BlazorMovies.SharedBackend\BlazorMovies.SharedBackend.csproj", "{D23B15CC-BE05-4E06-BC95-87D381C984C1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{C860C0E0-F932-4022-AE66-6D03F55D0580}"
 EndProject

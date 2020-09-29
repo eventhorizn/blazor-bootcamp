@@ -7,7 +7,9 @@ using BlazorMovies.Shared.Repositories;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 using System;
+using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Tewr.Blazor.FileReader;
@@ -23,7 +25,25 @@ namespace BlazorMovies.Client
             builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             ConfigureServices(builder.Services);
 
-            await builder.Build().RunAsync();
+            var host = builder.Build();
+            var js = host.Services.GetRequiredService<IJSRuntime>();
+            var culture = await js.InvokeAsync<string>("getFromLocalStorage", "culture");
+
+            CultureInfo selectedCulture;
+
+            if (culture == null)
+            {
+                selectedCulture = new CultureInfo("en-US");
+            }
+            else
+            {
+                selectedCulture = new CultureInfo(culture);
+            }
+
+            CultureInfo.DefaultThreadCurrentCulture = selectedCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = selectedCulture;
+
+            await host.RunAsync();
         }
 
         private static void ConfigureServices(IServiceCollection services)

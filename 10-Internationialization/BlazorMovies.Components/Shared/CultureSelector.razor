@@ -1,0 +1,34 @@
+﻿@using System.Globalization
+@inject NavigationManager navManager
+@inject IJSRuntime js
+
+<strong>Culture:</strong>
+
+<select @bind="culture">
+    @foreach (var item in cultures)
+    {
+        <option value="@item">@item.DisplayName</option>
+    }
+</select>
+
+@code {
+    CultureInfo[] cultures = new[]
+    {
+        new CultureInfo("en-US"),
+        new CultureInfo("es-DO"),
+        new CultureInfo("en"),
+        new CultureInfo("fr-FR")
+    };
+
+    CultureInfo culture
+    {
+        get => CultureInfo.CurrentCulture;
+        set
+        {
+            var jsInProcessRuntime = (IJSInProcessRuntime)js;
+            jsInProcessRuntime.InvokeVoid("setInLocalStorage", "culture", value.Name);
+
+            navManager.NavigateTo(navManager.Uri, forceLoad: true);
+        }
+    }
+}

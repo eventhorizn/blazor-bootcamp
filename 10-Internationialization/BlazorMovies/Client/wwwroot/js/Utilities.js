@@ -12,3 +12,11 @@ function dotnetStaticInvocation() {
 function dotnetInstanceInvocation(dotnetHelper) {
     dotnetHelper.invokeMethodAsync("IncrementCount");
 }
+
+function setInLocalStorage(key, value) {
+    localStorage[key] = value;
+}
+
+function getFromLocalStorage(key) {
+    return localStorage[key];
+}
