@@ -29,6 +29,7 @@ namespace BlazorMovies.Client
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
+            services.AddLocalization();
             services.AddTransient<IExampleInterface, ExampleImplementation>();
             services.AddTransient<IRepository, RepositoryInMemory>();
             services.AddScoped<IHttpService, HttpService>();

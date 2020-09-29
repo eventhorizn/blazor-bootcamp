@@ -1,14 +1,15 @@
 ﻿@page "/"
 @page "/index"
 @inject IMoviesRepository moviesRepository
+@inject IStringLocalizer<Resource> localizer
 
 <div>
-    <h3>In theaters</h3>
+    <h3>@localizer["intheaters"]</h3>
     <MoviesList Movies="InTheaters" />
 </div>
 
 <div>
-    <h3>Upcoming Releases</h3>
+    <h3>@localizer["upcomingreleases"]</h3>
     <MoviesList Movies="UpcomingReleases" />
 </div>
 
